@@ -2,3 +2,4 @@ psutil
 boto3
 flask
 ping3
+pyyaml
