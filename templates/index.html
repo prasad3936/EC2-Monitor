@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Health Check</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Server Health Check</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Instance ID</th>
+                <th>Instance Name</th>
+                <th>CPU Usage (%)</th>
+                <th>Memory Usage (%)</th>
+                <th>Disk Usage (%)</th>
+                <th>Network Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in health_data %}
+            <tr>
+                <td>{{ data.instance_id }}</td>
+                <td>{{ data.instance_name }}</td>
+                <td>{{ data.cpu_usage }}</td>
+                <td>{{ data.memory_usage }}</td>
+                <td>{{ data.disk_usage }}</td>
+                <td>{{ data.network_status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

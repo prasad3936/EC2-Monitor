@@ -1,0 +1,8 @@
+thresholds:
+  cpu: 80
+  memory: 90
+  disk: 80
+email:
+  sender: SENDER_EMAIL_ADDRESS
+  recipient: RECIPIENT_EMAIL_ADDRESS
+aws_region: ap-south-1
