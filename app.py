@@ -1,9 +1,8 @@
 from flask import Flask, render_template
-import boto3
 import psutil
 import ping3
 import logging
-import smtplib
+import boto3
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import yaml
@@ -11,23 +10,12 @@ import os
 
 app = Flask(__name__)
 
+# Set the AWS shared credentials file path
+os.environ['AWS_SHARED_CREDENTIALS_FILE'] = '/~/.aws/credentials'
+
 # Read configuration from config.yml file
 with open('config.yml', 'r') as config_file:
     config = yaml.safe_load(config_file)
-
-# Environment variables for AWS credentials
-aws_access_key = os.environ.get('AWS_ACCESS_KEY_ID')
-aws_secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-
-# Boto3 Setup with environment variables
-def authenticate_aws():
-    ec2_client = boto3.client(
-        'ec2',
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key,
-        region_name=config['aws_region']
-    )
-    return ec2_client
 
 # Health Checkup Logic
 def get_instance_metrics(instance_id):
@@ -71,19 +59,14 @@ def send_email_notification(subject, body):
 
 @app.route('/')
 def index():
-    ec2_client = authenticate_aws()
-    instances = ec2_client.describe_instances()
+    instances = boto3.client('ec2', region_name=config['aws_region']).describe_instances()
 
     health_data = []
 
     for reservation in instances['Reservations']:
         for instance in reservation['Instances']:
             instance_id = instance['InstanceId']
-            instance_name = [tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name']
-            if instance_name:
-                instance_name = instance_name[0]
-            else:
-                instance_name = instance_id  # Use instance ID if name tag not found
+            instance_name = next((tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name'), instance_id)
 
             try:
                 metrics = get_instance_metrics(instance_id)
