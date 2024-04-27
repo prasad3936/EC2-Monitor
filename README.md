@@ -26,7 +26,12 @@ These instructions will get you a copy of the project up and running on your loc
     git clone https://github.com/your_username/server-health-check.git
     ```
 
-2. **Install dependencies**:
+    ### Snapshots
+![Final Output](https://github.com/prasad3936/Server-Health-Check-Application/assets/63768420/26e3f940-319a-422a-82e5-4ec49ed4df60)
+
+   
+
+3. **Install dependencies**:
 
     ```bash
     pip install -r requirements.txt
@@ -52,3 +57,23 @@ Before running the application, ensure you have configured the following setting
      sender: example@example.com
      recipient: recipient@example.com
    aws_region: us-east-1
+
+### Running the application 
+
+1. ***Get into the directory***
+   
+```bash
+cd Server-Health-Check-Application
+```
+2. ***Run command***
+   
+```bash
+python3 app.py
+```
+
+### Accessing The Application
+
+***http://localhost:5000***
+
+### Snapshot
+![Final Output](https://github.com/prasad3936/Server-Health-Check-Application/assets/63768420/32c10067-99f3-4ebe-9c11-f9263ac05058)
