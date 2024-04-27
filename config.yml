@@ -3,6 +3,6 @@ thresholds:
   memory: 90
   disk: 80
 email:
-  sender: SENDER_EMAIL_ADDRESS
-  recipient: RECIPIENT_EMAIL_ADDRESS
+  sender: prasadcpatil246@gmail.com
+  recipient: prasadcpatil246@gmail.com
 aws_region: ap-south-1
