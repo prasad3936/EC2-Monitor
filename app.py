@@ -2,16 +2,13 @@ from flask import Flask, render_template
 import psutil
 import ping3
 import logging
-import boto3
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import yaml
 import os
 
 app = Flask(__name__)
-
-# Set the AWS shared credentials file path
-os.environ['AWS_SHARED_CREDENTIALS_FILE'] = '/~/.aws/credentials'
 
 # Read configuration from config.yml file
 with open('config.yml', 'r') as config_file:
@@ -42,20 +39,36 @@ def handle_error(exception):
 
 # Email Notification
 def send_email_notification(subject, body):
-    ses_client = boto3.client('ses', region_name=config['aws_region'])
-    message = {
-        'Subject': {'Data': subject},
-        'Body': {'Text': {'Data': body}}
-    }
+    # Set up SMTP connection to Gmail
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587  # Gmail SMTP port
+    sender_email = os.environ.get('EMAIL_USERNAME')
+    sender_password = os.environ.get('EMAIL_PASSWORD')
+
+    if not sender_email or not sender_password:
+        raise ValueError("Email username or password not set in environment variables.")
+
+    # Create message
+    message = MIMEMultipart()
+    message['From'] = sender_email
+    message['To'] = config['email']['recipient']
+    message['Subject'] = subject
+    message.attach(MIMEText(body, 'plain'))
+
     try:
-        response = ses_client.send_email(
-            Source=config['email']['sender'],
-            Destination={'ToAddresses': [config['email']['recipient']]},
-            Message=message
-        )
-        print("Email sent! Message ID:", response['MessageId'])
+        # Start TLS for security
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        # Login with your Gmail credentials
+        server.login(sender_email, sender_password)
+        # Send email
+        server.sendmail(sender_email, config['email']['recipient'], message.as_string())
+        print("Email sent!")
     except Exception as e:
         handle_error(e)
+    finally:
+        # Quit SMTP server
+        server.quit() if 'server' in locals() else None
 
 @app.route('/')
 def index():
