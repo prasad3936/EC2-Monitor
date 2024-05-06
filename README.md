@@ -23,7 +23,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/your_username/server-health-check.git
+   git clone https://github.com/prasad3936/Server-Health-Check-Application.git
     ```
 
     ### Snapshots
